@@ -1,4 +1,4 @@
-# vtest2
+# Vue Test With Rift
 
 ## Project setup
 ```
