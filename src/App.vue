@@ -5,35 +5,24 @@
 
     <div class="input-group mb-3" style="padding-left: 15px; padding-right: 15px">
       <input
+        v-model.lazy="searchValue"
         type="text"
         class="form-control"
-        placeholder="Search Movies"
-        aria-label="Search Movies"
+        placeholder="Search"
+        aria-label="Search"
         aria-describedby="basic-addon2"
         style="padding: 5px;"
         id="searchInput"
       >
-      <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="button" v-on:click="doSearch()">Search</button>
-      </div>
     </div>
-
-    <Table :columns="columns" :rows="rows"/>
+    <!-- <Search @emitSearch="updateSearch" :searchValue="searchValue"/> -->
+    <Table :columns="columns" :rows="rows" :searchValue="searchValue"/>
   </div>
 </template>
 
 <script>
-//import HelloWorld from "./components/HelloWorld.vue";
+import Search from "./components/Search.vue" ;
 import Table from "./components/Table.vue";
-
-function doSearch() {
-  var s = document.getElementById("searchInput").value;
-  // getData("search", ["title", "year", "genres", "target"], { title: `%${s}%` });
-  this.getData("search", ["asset_id", "asset_name", "asset_make", "asset_number"], {asset_name: `%${s}%`});
-  // this.rows.filter((row) => {
-  //   Object.filter()
-  // })
-}
 
 function unescapeValues(obj) {
   var res = [];
@@ -57,7 +46,7 @@ function unescapeValues(obj) {
   return res;
 }
 
-function getData(op = "get", fields = [], conditions = {}) {
+function getData(op = "get", fields = [], conditions = {}, options={}) {
   var reqUrl = `http://localhost:8082/`;
   // var dbRequest = JSON.stringify({
   //   op: op,
@@ -70,14 +59,15 @@ function getData(op = "get", fields = [], conditions = {}) {
   //   conditions: conditions
   // });
   var dbRequest = JSON.stringify({
-    op: op,
     host: '192.168.21.51',
     username: 'root',
     password: 'hcet',
-    db: "state_static",
-    table: "asset",
+    db: "accounting_state_static",
+    table: "client_group",
+    op: op,
     fields: fields,
-    conditions: conditions
+    conditions: conditions,
+    options: options
   });
   var req = new Request(reqUrl, {
     method: "POST",
@@ -107,21 +97,26 @@ function getData(op = "get", fields = [], conditions = {}) {
 export default {
   name: "app",
   components: {
+    Search,
     Table
   },
   data: () => ({
     error: "",
     columns: [],
     rows: [],
-    test: {}
+    test: {},
+    searchValue: ""
   }),
   mounted() {
-    this.getData("get", ["asset_id", "asset_name", "asset_make", "asset_number"], {});
+    this.getData("get", [], {});
   },
   methods: {
-    doSearch,
     getData,
-    unescapeValues
+    unescapeValues,
+    updateSearch(val) {
+      alert(val) ;
+      this.searchValue = val ;
+    }
   }
 };
 </script>

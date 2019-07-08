@@ -5,11 +5,11 @@
     <table class="table table-striped table-dark table-hover">
       <tr>
         <!-- HEADINGS -->
-        <th v-for="field in columns" v-bind:key="field" scope="col">{{field}}</th>
+        <th v-for="(field, index) in columns" v-bind:key="index" scope="col">{{field}}</th>
       </tr>
       <!-- ROWS -->
-      <tr v-for="(row) in rows" v-bind:key="row" scope="row">
-        <td v-for="(value) in row" v-bind:key="value">{{value}}</td>
+      <tr v-for="(row, index) in filterFn" v-bind:key="index" scope="row">
+        <td v-for="(value, index) in row" v-bind:key="index">{{value}}</td>
       </tr>
     </table>
     <!-- </div> -->
@@ -23,9 +23,21 @@ export default {
   components: {},
   props: {
     columns: [],
-    rows: []
+    rows: [],
+    searchValue: ""
+  },
+  computed: {
+    filterFn() {
+      return this.rows.filter((row) => {
+        for (var field in row) {
+          if (row[field].toLowerCase().match(this.searchValue.toLowerCase())) return true ; 
+        }
+        return false;
+      });
+    }
   }
-};
+}
+
 </script>
 
 <style>
