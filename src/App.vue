@@ -17,12 +17,26 @@
     </div>
     <!-- <Search @emitSearch="updateSearch" :searchValue="searchValue"/> -->
     <Table :columns="columns" :rows="rows" :searchValue="searchValue"/>
+    <Cover :width="50" :height="100" :source="test"/>
+    <div>
+      <b-col>
+        <b-img-lazy v-bind="coverProps" :src="getImageUrl(80)" alt="Image 1"></b-img-lazy>
+        <b-img-lazy v-bind="coverProps" :src="getImageUrl(82)" alt="Image 2"></b-img-lazy>
+        <b-img-lazy v-bind="coverProps" :src="getImageUrl(84)" alt="Image 3"></b-img-lazy>
+        <b-img-lazy v-bind="coverProps" :src="getImageUrl(85)" alt="Image 4"></b-img-lazy>
+        <b-img-lazy v-bind="coverProps" :src="getImageUrl(88)" alt="Image 5"></b-img-lazy>
+        <b-img-lazy v-bind="coverProps" :src="getImageUrl(90)" alt="Image 6"></b-img-lazy>
+        <b-img-lazy v-bind="coverProps" :src="getImageUrl(92)" alt="Image 7"></b-img-lazy>
+        <b-img-lazy v-bind="coverProps" :src="getImageUrl(94)" alt="Image 8"></b-img-lazy>
+      </b-col>
+    </div>
   </div>
 </template>
 
 <script>
-import Search from "./components/Search.vue" ;
+// import Search from "./components/Search.vue";
 import Table from "./components/Table.vue";
+import Cover from "./components/Cover.vue";
 
 function unescapeValues(obj) {
   var res = [];
@@ -46,36 +60,37 @@ function unescapeValues(obj) {
   return res;
 }
 
-function getData(op = "get", fields = [], conditions = {}, options={}) {
+function getData(op = "get", fields = [], conditions = {}, options = {}) {
   var reqUrl = `http://localhost:8082/`;
-  // var dbRequest = JSON.stringify({
-  //   op: op,
-  //   host: 'localhost',
-  //   username: 'root',
-  //   password: '0f6fNF9D5Mqf0KTW',
-  //   db: "lamp_light",
-  //   table: "movies",
-  //   fields: fields,
-  //   conditions: conditions
-  // });
-  var dbRequest = JSON.stringify({
-    host: '192.168.21.51',
-    username: 'root',
-    password: 'hcet',
-    db: "accounting_state_static",
-    table: "client_group",
+  var dbRequest = {
     op: op,
+    host: "localhost",
+    username: "root",
+    password: "0f6fNF9D5Mqf0KTW",
+    db: "lamp_light",
+    table: "movies",
     fields: fields,
     conditions: conditions,
     options: options
-  });
+  };
+  // var dbRequest = JSON.stringify({
+  //   host: '192.168.21.51',
+  //   username: 'root',
+  //   password: 'hcet',
+  //   db: "accounting_state_static",
+  //   table: "client_group",
+  //   op: op,
+  //   fields: fields,
+  //   conditions: conditions,
+  //   options: options
+  // });
   var req = new Request(reqUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     mode: "cors",
-    body: dbRequest
+    body: JSON.stringify(dbRequest)
   });
 
   fetch(req)
@@ -97,15 +112,25 @@ function getData(op = "get", fields = [], conditions = {}, options={}) {
 export default {
   name: "app",
   components: {
-    Search,
-    Table
+    // Search,
+    Table,
+    Cover
   },
   data: () => ({
     error: "",
     columns: [],
     rows: [],
-    test: {},
-    searchValue: ""
+    test: "file:///D:/Projects/GitHub/vtest2/src/assets/cover.jpg",
+    searchValue: "",
+    coverProps: {
+      center: true,
+      fluidGrow: true,
+      blank: true,
+      blankColor: "#bbb",
+      width: 600,
+      height: 400,
+      class: "my-5"
+    }
   }),
   mounted() {
     this.getData("get", [], {});
@@ -114,8 +139,12 @@ export default {
     getData,
     unescapeValues,
     updateSearch(val) {
-      alert(val) ;
-      this.searchValue = val ;
+      alert(val);
+      this.searchValue = val;
+    },
+    getImageUrl(imageId) {
+      const { width, height } = this.coverProps;
+      return `https://picsum.photos/${width}/${height}/?image=${imageId}`;
     }
   }
 };
