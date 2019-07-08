@@ -28,7 +28,11 @@ import Table from "./components/Table.vue";
 
 function doSearch() {
   var s = document.getElementById("searchInput").value;
-  getData("search", ["title", "year", "genres", "target"], { title: `%${s}%` });
+  // getData("search", ["title", "year", "genres", "target"], { title: `%${s}%` });
+  this.getData("search", ["asset_id", "asset_name", "asset_make", "asset_number"], {asset_name: `%${s}%`});
+  // this.rows.filter((row) => {
+  //   Object.filter()
+  // })
 }
 
 function unescapeValues(obj) {
@@ -54,11 +58,24 @@ function unescapeValues(obj) {
 }
 
 function getData(op = "get", fields = [], conditions = {}) {
-  var reqUrl = `http://localhost:8081/`;
+  var reqUrl = `http://localhost:8082/`;
+  // var dbRequest = JSON.stringify({
+  //   op: op,
+  //   host: 'localhost',
+  //   username: 'root',
+  //   password: '0f6fNF9D5Mqf0KTW',
+  //   db: "lamp_light",
+  //   table: "movies",
+  //   fields: fields,
+  //   conditions: conditions
+  // });
   var dbRequest = JSON.stringify({
     op: op,
-    db: "lamp_light",
-    table: "movies",
+    host: '192.168.21.51',
+    username: 'root',
+    password: 'hcet',
+    db: "state_static",
+    table: "asset",
     fields: fields,
     conditions: conditions
   });
@@ -99,62 +116,7 @@ export default {
     test: {}
   }),
   mounted() {
-    this.getData("get", ["title", "year", "genres", "target"], {});
-    // var reqUrl = `http://localhost:8081/`;
-    // var dbRequest = JSON.stringify({
-    //   op: "get",
-    //   db: "lamp_light",
-    //   table: "movies",
-    //   fields: ["title", "year", "genres", "target"],
-    //   conditions: {}
-    // });
-    // var req = new Request(reqUrl, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json"
-    //   },
-    //   mode: "cors",
-    //   body: dbRequest
-    // });
-
-    // function unescapeValues(obj) {
-    //   var res = [];
-    //   obj.forEach(row => {
-    //     // row here is another object
-    //     var newRow = {};
-    //     if (typeof row == "object") {
-    //       // row.forEach((val, index) => {
-
-    //       // })
-    //       for (var field in row) {
-    //         //console.log(row[field]);
-    //         try {
-    //           newRow[field] = decodeURI(row[field]);
-    //           /*if (field == "target") {
-    //             newRow[field] = `<a href="${newRow[field]}">Watch</a>`;
-    //           }*/
-    //         } catch (error) {
-    //           newRow[field] = row[field];
-    //         }
-    //       }
-    //       res.push(newRow);
-    //     }
-    //   });
-    //   return res;
-    // }
-
-    // fetch(req)
-    //   .then(response => response.json())
-    //   .then(val => {
-    //     if (val) {
-    //       this.rows = unescapeValues(val);
-    //       var cols = [];
-    //       for (var field in val[0]) {
-    //         cols.push(field);
-    //       }
-    //       this.columns = cols;
-    //     }
-    //   });
+    this.getData("get", ["asset_id", "asset_name", "asset_make", "asset_number"], {});
   },
   methods: {
     doSearch,
